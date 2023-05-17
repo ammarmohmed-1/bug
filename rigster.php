@@ -22,8 +22,10 @@
         $last_name = filter_var( $_POST["last_name"], FILTER_SANITIZE_STRING);
         $email = filter_var( $_POST["emaill"], FILTER_VALIDATE_EMAIL);
         $pwd = filter_var( $_POST["pwd"], FILTER_SANITIZE_STRING);
-        // $pwd = password_hash($pwd,PASSWORD_DEFAULT);
+        $pwd = password_hash($pwd,PASSWORD_DEFAULT);
         
+    $getdb -> setAttribute(PDO::ATTR_ERRMODE , PDO::ERRMODE_EXCEPTION); // this is for error mode in PDO
+    $getdb -> setAttribute(PDO::ATTR_EMULATE_PREPARES , false);
 
         // if a user get a mistake  
         $errors = [];
@@ -38,46 +40,44 @@
         elseif(empty($pwd)){
             $errors[]= "you must be input the password";
         }
-        // if the email is here in database
-        // validate email
-   if(empty($email)){
-    $errors[]="يجب كتابة البريد الاكترونى";
-   }elseif(filter_var($email,FILTER_VALIDATE_EMAIL)==false){
-    $errors[]="البريد الاكترونى غير صالح";
-   }
 
-  // $stm=;
-  $check = $getdb->prepare("SELECT email FROM loginn WHERE email = email ");
-  $check->execute();
-  $checkk = mysqli_fetch_all($checkk);
+  // if the email is here
+  $check_email = $getdb->prepare("SELECT * FROM loginn WHERE email = :value ");
+  $check_email->bindParam("value", $_POST["emaill"]);
+  $check_email->execute();
+  $count = $check_email->rowCount();
 
-  var_dump($check);
-  print_r($checkk);
-  echo "<br>";
-  echo "<h1>" . $checkk['email'] . "</h1>";
-  echo "<br>";
-
-   // validate password
-  //  if($check_data){
-  //       echo "the email is not right";
-  //  }
-
+  if($count > 0){
+    echo "<br>";
+    $errors[]= "<div class='alert alert-danger'>this email is already exist</div>";
+    echo "<br>";
+  }
 
         // if user make everything right 
         if(empty($errors)){
-            $pwd = password_hash($pwd,PASSWORD_DEFAULT);
+          echo "<div class='alert alert-success'>you are rigster</div>";
             $datauser = $getdb->prepare(
               "INSERT INTO 
             loginn(first_name,lastname,email,pwd) 
             VALUES('$first_name' , '$last_name','$email' , '$pwd' );");
-          echo "everything is right";
           echo "<br>";
           $datauser->execute();
+
+          header("location:index.php");
+          
+          session_start();
+          $_SESSION['user']=[
+            "firstname"=> $first_name,
+            "lastname" => $last_name,
+            "email" => $email
+          ];
+          
+
         }
         else{
           var_dump($errors);
         }
-    }
+}
   ?>
 
 
