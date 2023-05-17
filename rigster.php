@@ -23,6 +23,7 @@
         $email = filter_var( $_POST["emaill"], FILTER_VALIDATE_EMAIL);
         $pwd = filter_var( $_POST["pwd"], FILTER_SANITIZE_STRING);
         $pwd = password_hash($pwd,PASSWORD_DEFAULT);
+        $gender = filter_var( $_POST["gender"], FILTER_SANITIZE_STRING);
         
     $getdb -> setAttribute(PDO::ATTR_ERRMODE , PDO::ERRMODE_EXCEPTION); // this is for error mode in PDO
     $getdb -> setAttribute(PDO::ATTR_EMULATE_PREPARES , false);
@@ -36,7 +37,9 @@
             $errors[]= "this is not right in lastname";
         }elseif(empty($email) || filter_var($email , FILTER_VALIDATE_EMAIL) === false){
             $errors[]= "you must be input the email";
-        }
+        }elseif(empty($gender) || filter_var($gender , FILTER_SANITIZE_STRING) === false){
+          $errors[]= "you must inter your gender";
+      }
         elseif(empty($pwd)){
             $errors[]= "you must be input the password";
         }
@@ -58,8 +61,8 @@
           echo "<div class='alert alert-success'>you are rigster</div>";
             $datauser = $getdb->prepare(
               "INSERT INTO 
-            loginn(first_name,lastname,email,pwd) 
-            VALUES('$first_name' , '$last_name','$email' , '$pwd' );");
+            loginn(first_name, lastname, email, pwd , gender) 
+            VALUES('$first_name' , '$last_name','$email' , '$pwd' , '$gender');");
           echo "<br>";
           $datauser->execute();
 
@@ -69,7 +72,8 @@
           $_SESSION['user']=[
             "firstname"=> $first_name,
             "lastname" => $last_name,
-            "email" => $email
+            "email" => $email,
+            "gender" => $gender
           ];
           
 
@@ -101,7 +105,15 @@
     <label for="exampleInputPassword1" class="form-label">Password</label>
     <input type="password" name="pwd" class="form-control" id="exampleInputPassword1">
   </div>
-  
+  <div class="mb-3">
+    <input type="radio" value="male" name="gender" id="">
+    <label for="gender">male</label>
+    <br>
+    <br>
+    <input type="radio" value="female" name="gender" id="">
+    <label for="gender">female</label>
+
+  </div>
   <button name="send" class="btn btn-primary">send now</button>
 </form>
 </body>

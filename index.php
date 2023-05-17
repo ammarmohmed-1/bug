@@ -22,7 +22,19 @@ echo "welcome" . $_SESSION['user']['firstname'] ;
 <body>
 
 <h1>hello mr: user you are in a main profile in this site</h1>
+<img  src="images/male.png" alt="image">
 <a href="logout.php">log out</a>
 
+<style>
+  img{
+  width:100px;
+  height: auto;
+  display: flex;
+  margin: auto;
+}
+
+</style>
+
 </body>
+
 </html>

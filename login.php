@@ -65,7 +65,15 @@
     <label for="exampleInputPassword1" class="form-label">Password</label>
     <input type="password" name="pwd" class="form-control" id="exampleInputPassword1">
   </div>
-  
+  <div class="mb-3">
+    <h5>
+      <input type="checkbox" name="remamber_me">
+      <label for="remamber_me">remamber me</label>
+  </h5>
+  </div>
+  <div class="mb-3">
+    <h3>you have account <a href="rigster.php">create account</a></h3>
+  </div>
   <button name="submit" class="btn btn-primary">log in</button>
 </form>
 </body>
